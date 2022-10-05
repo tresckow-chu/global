@@ -1,4 +1,4 @@
-namespace BPSGobalClient.Services
+namespace global.Services
 {
     public static class ConfigurationHelper
     {

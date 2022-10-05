@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
-using BPSGobalClient.Services;
+using global.Services;
 using Blazored.LocalStorage;
 using System.Net.Http.Headers;
 
-namespace BPSGobalClient.AuthProviders
+namespace global.AuthProviders
 {
     public class AuthStateProvider : AuthenticationStateProvider
     {

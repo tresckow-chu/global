@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BPSGobalClient.Entities;
+using global.Entities;
 
-namespace BPSGobalClient.Services
+namespace global.Services
 {
     public interface IAuthenticationService
     {

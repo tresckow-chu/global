@@ -1,10 +1,10 @@
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Text.Json;
-using BPSGobalClient.AuthProviders;
-using BPSGobalClient.Entities;
+using global.AuthProviders;
+using global.Entities;
 
-namespace BPSGobalClient.Services
+namespace global.Services
 {
     public class AuthenticationService : ServiceBase, IAuthenticationService
     {

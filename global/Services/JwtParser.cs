@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using System.Text.Json;
 
-namespace BPSGobalClient.Services
+namespace global.Services
 {
     public static class JwtParser
     {

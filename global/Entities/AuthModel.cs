@@ -1,7 +1,7 @@
 // AuthModel.cs
 using System.ComponentModel.DataAnnotations;
 
-namespace BPSGobalClient.Entities
+namespace global.Entities
 {
 	public class LoginResult
 	{

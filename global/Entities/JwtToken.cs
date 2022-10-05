@@ -1,4 +1,4 @@
-namespace BPSGobalClient.Entities
+namespace global.Entities
 {
 
     public class JwtToken

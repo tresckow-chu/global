@@ -1,7 +1,7 @@
 using System.IO;
 using System.IO.Compression;
 
-namespace BPSGobalClient.Utils
+namespace global.Utils
 {
     internal class Compressor
     {

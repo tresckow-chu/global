@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using Blazored.LocalStorage;
 
-namespace BPSGobalClient.Services
+namespace global.Services
 {
     public class ServiceBase : IServiceBase
     {

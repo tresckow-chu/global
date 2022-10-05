@@ -1,4 +1,4 @@
-namespace BPSGobalClient.Constants
+namespace global.Constants
 {
     public class AppSettings
     {
