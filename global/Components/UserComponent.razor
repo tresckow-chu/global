@@ -1,0 +1,50 @@
+<h3>UserComponent</h3>
+
+
+<AuthorizeView>
+	<Authorized>
+		User @context.User.Identity.Name
+		<a href="Logout">Log out</a>
+	</Authorized>
+	<NotAuthorized>
+		Unauthenticated
+		@*  <a href="Registration">Register</a>*@
+		<a href="Login">Authenticate</a>
+	</NotAuthorized>
+</AuthorizeView>
+
+
+
+@*
+
+
+@code {
+
+}
+@inject IJSRuntime jsr
+
+<p>
+	@if (string.IsNullOrEmpty(username))
+	{
+		<span><a href="/register">Register</a> <a href="/login">Login</a></span>
+	}
+	else
+	{
+		<span>Hello, @username <a href="/logout">(Logout)</a></span>
+	}
+</p>
+
+@code {
+
+	string username = string.Empty;
+
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
+		var userdata = await jsr.InvokeAsync<string>("localStorage.getItem", "app1-user").ConfigureAwait(false);
+		if (!string.IsNullOrWhiteSpace(userdata))
+		{
+			username = userdata.Split(';', 2)[0];
+		}
+	}
+}*@
