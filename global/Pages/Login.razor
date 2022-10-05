@@ -1,0 +1,47 @@
+@page "/login"
+
+@inject HttpClient Http
+@inject NavigationManager nav
+@inject IAuthenticationService AuthenticationService
+
+<h3>Login</h3>
+
+<p>@message</p>
+
+
+<EditForm Model="user" OnValidSubmit="OnValid" style="max-width:500px;">
+	<DataAnnotationsValidator />
+	<ValidationSummary />
+	<div class="mb-2">
+		<InputText class="form-control" @bind-Value="user.UserName" placeholder="Enter Email"></InputText>
+	</div>
+	<div class="mb-2">
+		<InputText type="password" class="form-control" @bind-Value="user.Password" placeholder="Enter Password"></InputText>
+	</div>
+	<div class="mb-2 text-right">
+		<button class="btn btn-secondary" disabled="@isDisabled">Login</button>
+	</div>
+</EditForm>
+
+
+@code {
+	LoginModel user = new LoginModel();
+	string message = string.Empty;
+	bool isDisabled = false;
+
+	protected override void OnInitialized()
+	{
+		user.UserName = "user1";
+		user.Password = "abc123";
+		user.PrimaryEmailAddress = "ma";
+	}
+
+	private async Task OnValid()
+	{
+		isDisabled = true;
+		var rslt = await AuthenticationService.Login(user);
+
+		if(rslt.IsSuccess)
+			nav.NavigateTo("/");	
+	}
+}
