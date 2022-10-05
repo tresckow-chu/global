@@ -1,0 +1,170 @@
+﻿@inject HttpClient Http
+
+@page "/projectdropdown"
+
+<h3>BPSG</h3>
+
+@if (projects == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+     <div class="col-md-6 p-3">
+        <RadzenCard>
+            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Select the Project</RadzenText>
+            <RadzenDropDown AllowClear="true" TValue="string" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" Class="w-100"
+                        Placeholder="Select..." Data=@projects TextProperty="Name" ValueProperty="Id" 
+                        Change=@(args => OnProjectChange(args, "DropDown with placeholder")) />
+        </RadzenCard>
+    </div>
+}
+
+@if (_IsBookSectionVisible) {
+
+
+    @if (books == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <div class="col-md-6 p-3">
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Select the Book</RadzenText>
+                <RadzenDropDown AllowClear="true" TValue="string" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" Class="w-100"
+                        Placeholder="Select..." Data=@books TextProperty="BookName" ValueProperty="BookId"
+                        Change=@(args => OnBookChange(args, "DropDown with placeholder")) />
+            </RadzenCard>
+        </div>
+    }
+}
+
+@if (_IsChapterSectionVisible)
+{
+    @if (chapters == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <div class="col-md-6 p-3">
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Select Chapter</RadzenText>
+                <RadzenDropDown AllowClear="true" TValue="string" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" Class="w-100"
+                        Placeholder="Select..." Data=@chapters TextProperty="ChapterName" ValueProperty="ChapterId"
+                        Change=@(args => OnChapterChange(args, "DropDown with placeholder")) />
+            </RadzenCard>
+        </div>
+    }
+}
+
+@if (_IsVerseSectionVisible)
+{   
+    @if (DisplayVerses == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Verses</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ver2 in DisplayVerses)
+                {
+                    <tr>
+                        <td>@ver2.Verse</td>
+                        <td>@ver2.Text</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+
+
+@code {
+
+    private IEnumerable<Book>? books;
+    private IEnumerable<Chapter>? chapters;
+    private IEnumerable<Project>? projects;
+    private IEnumerable<Verse>? verses;
+
+    private bool _IsBookSectionVisible = false;
+    private bool _IsChapterSectionVisible = false;
+    private bool _IsVerseSectionVisible = false;
+
+    private int _ActiveBookId = -1;
+    private int _ActiveChapterId = -1;
+
+    private IEnumerable<Book> BookList;
+    private IEnumerable<VerseDetail> SelectedVerses;
+    public IEnumerable<VerseLong>? DisplayVerses { get; set; }
+
+    string test = "sdfsf";
+
+    protected override async Task OnInitializedAsync()
+    { 
+        projects = await Http.GetFromJsonAsync<IEnumerable<Project>>("data/project.json");
+    }
+
+    private async Task OnProjectChange(object value, string name)
+    {
+        var str = value is IEnumerable<object> ? string.Join(", ", (IEnumerable<object>)value) : value;
+
+        books = null;
+        chapters = null;
+        verses = null;
+
+        _IsBookSectionVisible = true;
+        _IsChapterSectionVisible = false;
+        _IsVerseSectionVisible = false;
+
+        books = await Http.GetFromJsonAsync<IEnumerable<Book>>("data/kjv/books.json");
+        BookList = books;
+    }
+
+    private async Task OnBookChange(object value, string name)
+    {
+        var str = value is IEnumerable<object> ? string.Join(", ", (IEnumerable<object>)value) : value;
+
+        chapters = null;
+        verses = null;
+
+        _IsChapterSectionVisible = true;
+        _IsVerseSectionVisible = false;
+
+        _ActiveBookId = (int)value;
+
+        var chaps = await Http.GetFromJsonAsync<IEnumerable<Chapter>>("data/kjv/chapters.json");
+
+        chapters = chaps.Where(x => x.BookId == _ActiveBookId).ToList();
+    }
+
+    private async Task OnChapterChange(object value, string name)
+    {
+        _ActiveChapterId = (int)value;
+
+        var str = value is IEnumerable<object> ? string.Join(", ", (IEnumerable<object>)value) : value;
+
+        _IsVerseSectionVisible = true;
+
+        verses = null;
+
+        var booker = BookList.Where(x => x.BookId == _ActiveBookId).First();
+
+        string Url = $"data/kjv/min/{booker.BookJsonFileName}";
+
+        var vs2 = await Http.GetFromJsonAsync<VerseMike>(Url);
+
+        var kitten = vs2.Chapters.Where(x => x.Chapter == _ActiveChapterId.ToString()).ToList();
+
+        DisplayVerses = kitten.First().Verses;
+    }
+           
+}
